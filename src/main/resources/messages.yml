@@ -104,4 +104,4 @@ command:
   online: "%prefix%&cThere aren't any players online!@@&c%command%@@%command%"
   randomize: "%prefix%&5%player%&d's inventory has been randomized@@&d%command%@@%command%" # %player%
   swap: "%prefix%&5%player1%&d and &5%player2%&d's inventories have been swapped@@&d%command%@@%command%" # %player1%, %player2%
-  reload: "%prefix%&dConfig has been reloaded@@&d%command%@@%command%"
+  reload: "%prefix%&dMessages have been reloaded@@&d%command%@@%command%"
