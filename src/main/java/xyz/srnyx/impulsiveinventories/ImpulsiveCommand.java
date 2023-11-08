@@ -3,100 +3,99 @@ package xyz.srnyx.impulsiveinventories;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import xyz.srnyx.annoyingapi.AnnoyingMessage;
-import xyz.srnyx.annoyingapi.AnnoyingUtility;
 import xyz.srnyx.annoyingapi.command.AnnoyingCommand;
 import xyz.srnyx.annoyingapi.command.AnnoyingSender;
+import xyz.srnyx.annoyingapi.message.AnnoyingMessage;
+import xyz.srnyx.annoyingapi.utility.BukkitUtility;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 
 
-public class ImpulsiveCommand implements AnnoyingCommand {
-    @NotNull private final ImpulsiveInventories plugin;
-    /**
-     * {@link Random} to generate random numbers
-     */
-    @NotNull private final Random random = new Random();
+public class ImpulsiveCommand extends AnnoyingCommand {
+    @NotNull private static final Random RANDOM = new Random();
 
-    @Contract(pure = true)
+    @NotNull private final ImpulsiveInventories plugin;
+
     public ImpulsiveCommand(@NotNull ImpulsiveInventories plugin) {
         this.plugin = plugin;
     }
 
     @Override @NotNull
-    public ImpulsiveInventories getPlugin() {
+    public ImpulsiveInventories getAnnoyingPlugin() {
         return plugin;
     }
 
     @Override @NotNull
     public String getName() {
-        return "impulsiveinventories";
+        return "impulsive";
     }
 
     @Override @NotNull
     public String getPermission() {
-        return "impulsiveinventories.command";
+        return "impulsive.command";
     }
 
     @Override
     public void onCommand(@NotNull AnnoyingSender sender) {
-        final String[] args = sender.getArgs();
-        final boolean isPlayer = sender.getCmdSender() instanceof Player;
+        final String[] args = sender.args;
 
         if (args.length == 1) {
+            // reload
             if (sender.argEquals(0, "reload")) {
                 plugin.reloadPlugin();
                 new AnnoyingMessage(plugin, "command.reload").send(sender);
                 return;
             }
 
-            if (isPlayer) {
-                final Player player = sender.getPlayer();
-                final InventoryManager manager = new InventoryManager(player.getInventory());
+            if (!sender.checkPlayer()) return;
+            final Player player = sender.getPlayer();
+            final InventoryManager manager = new InventoryManager(player.getInventory());
 
-                if (sender.argEquals(0, "randomize")) {
-                    manager.randomize();
-                    new AnnoyingMessage(plugin, "command.randomize")
-                            .replace("%player%", player.getName())
-                            .send(player);
+            // randomize
+            if (sender.argEquals(0, "randomize")) {
+                manager.randomize();
+                new AnnoyingMessage(plugin, "command.randomize")
+                        .replace("%player%", player.getName())
+                        .send(player);
+                return;
+            }
+
+            // swap
+            if (sender.argEquals(0, "swap")) {
+                final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+                players.remove(player);
+                final Player randomPlayer = players.stream()
+                        .skip(RANDOM.nextInt(players.size()))
+                        .findFirst()
+                        .orElse(null);
+                if (randomPlayer == null) {
+                    new AnnoyingMessage(plugin, "command.online").send(sender);
                     return;
                 }
 
-                if (sender.argEquals(0, "swap")) {
-                    final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-                    final int length = players.size();
-                    if (length == 0) {
-                        new AnnoyingMessage(plugin, "command.online").send(sender);
-                        return;
-                    }
-
-                    final Player randomPlayer = (Player) players.toArray()[random.nextInt(length)];
-                    manager.swap(randomPlayer.getInventory());
-                    new AnnoyingMessage(plugin, "command.swap")
-                            .replace("%player1%", player.getName())
-                            .replace("%player2%", randomPlayer.getName())
-                            .send(sender);
-                    return;
-                }
+                manager.swap(randomPlayer.getInventory());
+                new AnnoyingMessage(plugin, "command.swap")
+                        .replace("%player1%", player.getName())
+                        .replace("%player2%", randomPlayer.getName())
+                        .send(sender);
+                return;
             }
         }
 
         if (args.length == 2) {
             final Player target = Bukkit.getPlayer(args[1]);
             if (target == null) {
-                new AnnoyingMessage(plugin, "error.invalid-argument")
-                        .replace("%argument%", args[1])
-                        .send(sender);
+                sender.invalidArgument(args[1]);
                 return;
             }
             final InventoryManager manager = new InventoryManager(target.getInventory());
 
+            // randomize <player>
             if (sender.argEquals(0, "randomize")) {
                 manager.randomize();
                 new AnnoyingMessage(plugin, "command.randomize")
@@ -105,7 +104,9 @@ public class ImpulsiveCommand implements AnnoyingCommand {
                 return;
             }
 
-            if (sender.argEquals(0, "swap") && isPlayer) {
+            // swap <player>
+            if (sender.argEquals(0, "swap")) {
+                if (!sender.checkPlayer()) return;
                 final Player player = sender.getPlayer();
                 manager.swap(player.getInventory());
                 new AnnoyingMessage(plugin, "command.swap")
@@ -116,11 +117,12 @@ public class ImpulsiveCommand implements AnnoyingCommand {
             }
         }
 
+        // swap <player1> <player2>
         if (args.length == 3 && sender.argEquals(0, "swap")) {
             final Player target1 = Bukkit.getPlayer(args[1]);
             final Player target2 = Bukkit.getPlayer(args[2]);
             if (target1 == null || target2 == null) {
-                new AnnoyingMessage(plugin, "error.invalid-arguments").send(sender);
+                sender.invalidArguments();
                 return;
             }
 
@@ -132,13 +134,13 @@ public class ImpulsiveCommand implements AnnoyingCommand {
             return;
         }
 
-        new AnnoyingMessage(plugin, "error.invalid-arguments").send(sender);
+        sender.invalidArguments();
     }
 
     @Override @Nullable
     public Collection<String> onTabComplete(@NotNull AnnoyingSender sender) {
-        if (sender.getArgs().length == 1) return Arrays.asList("randomize", "swap", "reload");
-        if (sender.argEquals(0, "randomize", "swap")) return AnnoyingUtility.getOnlinePlayerNames();
+        if (sender.args.length == 1) return Arrays.asList("randomize", "swap", "reload");
+        if (sender.argEquals(0, "randomize", "swap")) return BukkitUtility.getOnlinePlayerNames();
         return null;
     }
 }

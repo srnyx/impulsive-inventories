@@ -1,20 +1,22 @@
 name: ${name}
-description: Plugin that allows you to randomize and swap inventories
+description: ${description}
 authors:
   - srnyx
-website: https://srnyx.xyz
+website: https://srnyx.com
 
-main: xyz.srnyx.impulsiveinventories.ImpulsiveInventories
+main: ${group}.impulsiveinventories.ImpulsiveInventories
 version: ${version}
+api-version: 1.13
 
 commands:
-  impulsiveinventories:
+  impulsive:
     description: Main command for ImpulsiveInventories
     aliases:
       - ii
       - impinv
-    permission: impulsiveinventories.command
+      - impulsiveinventories
+    permission: impulsive.command
 
 permissions:
-  impulsiveinventories.command:
-    description: Allows the player to use /impulsiveinventories
+  impulsive.command:
+    description: Allows the player to use /impulsive
