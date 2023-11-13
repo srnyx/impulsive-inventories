@@ -14,7 +14,7 @@ Plugin that allows you to randomize and swap inventories of players.
 
 ## Download
 
-**✅ Stable:** You can download the latest **stable** version at [Modrinth](https://modrinth.com/plugin/impulsive-inventories), [Hangar](https://hangar.papermc.io/srnyx/ImpulsiveInventories), [Spigot](https://spigotmc.org/resources/######), or [Bukkit](https://dev.bukkit.org/projects/impulsive-inventories)
+**✅ Stable:** You can download the latest **stable** version at [Modrinth](https://modrinth.com/plugin/impulsive-inventories), [Hangar](https://hangar.papermc.io/srnyx/ImpulsiveInventories), [Spigot](https://spigotmc.org/resources/113437), or [Bukkit](https://dev.bukkit.org/projects/impulsive-inventories)
 
 **🚧 Snapshot:** You can download the latest **snapshot** version at [actions/workflows/build.yml](https://github.com/srnyx/impulsive-inventories/actions/workflows/build.yml)
 
