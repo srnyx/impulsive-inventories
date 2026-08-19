@@ -18,3 +18,4 @@ on:
 jobs:
   build:
     uses: srnyx/tools/.github/workflows/publish.yml@main
+    secrets: inherit
