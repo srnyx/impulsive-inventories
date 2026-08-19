@@ -21,3 +21,9 @@ Plugin that allows you to randomize and swap inventories of players.
 # Wiki
 
 For all information about the plugin (commands, permissions, etc...) please see the wiki at [github.com/srnyx/impulsive-inventories/wiki](https://github.com/srnyx/impulsive-inventories/wiki)
+
+### not sponsors, just cool stuff :)
+
+[![Lilypad server hosting](https://srnyx.com/assets/banners/lilypad.png)](https://srnyx.com/lilypad?utm_medium=listing&utm_content=lilypad&utm_source=github&utm_campaign=impulsive-inventories)
+[![Review me on TrustPilot!](https://srnyx.com/assets/banners/reviewme.png)](https://srnyx.com/review?utm_medium=listing&utm_content=review&utm_source=github&utm_campaign=impulsive-inventories)
+[![Host events on Event Alerts](https://srnyx.com/assets/banners/eventalerts.png)](https://eventalerts.gg?utm_medium=listing&utm_content=eventalerts&utm_source=github&utm_campaign=impulsive-inventories)
